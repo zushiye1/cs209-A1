@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
  * based on this demo, or implement it in a different way.
  */
 public class OnlineCoursesAnalyzer {
-
     List<Course> courses = new ArrayList<>();
 
     public OnlineCoursesAnalyzer(String datasetPath) {
@@ -22,12 +21,18 @@ public class OnlineCoursesAnalyzer {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(",(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)", -1);
-                Course course = new Course(info[0], info[1], new Date(info[2]), info[3], info[4], info[5],
-                        Integer.parseInt(info[6]), Integer.parseInt(info[7]), Integer.parseInt(info[8]),
-                        Integer.parseInt(info[9]), Integer.parseInt(info[10]), Double.parseDouble(info[11]),
-                        Double.parseDouble(info[12]), Double.parseDouble(info[13]), Double.parseDouble(info[14]),
-                        Double.parseDouble(info[15]), Double.parseDouble(info[16]), Double.parseDouble(info[17]),
-                        Double.parseDouble(info[18]), Double.parseDouble(info[19]), Double.parseDouble(info[20]),
+                Course course = new Course(
+                        info[0], info[1], new Date(info[2]), info[3], info[4], info[5],
+                        Integer.parseInt(info[6]), Integer.parseInt(info[7]),
+                        Integer.parseInt(info[8]),
+                        Integer.parseInt(info[9]), Integer.parseInt(info[10]),
+                        Double.parseDouble(info[11]),
+                        Double.parseDouble(info[12]), Double.parseDouble(info[13]),
+                        Double.parseDouble(info[14]),
+                        Double.parseDouble(info[15]), Double.parseDouble(info[16]),
+                        Double.parseDouble(info[17]),
+                        Double.parseDouble(info[18]), Double.parseDouble(info[19]),
+                        Double.parseDouble(info[20]),
                         Double.parseDouble(info[21]), Double.parseDouble(info[22]));
                 courses.add(course);
             }
@@ -46,15 +51,18 @@ public class OnlineCoursesAnalyzer {
 
     //1
     public Map<String, Integer> getPtcpCountByInst() {
-        LinkedHashMap<String, Integer> result = this.courses.stream().collect(Collectors.groupingBy((Course::getInstitution),Collectors.summingInt(Course::getParticipants)))
+        LinkedHashMap<String, Integer> result = this.courses.stream()
+                .collect(Collectors.groupingBy((Course::getInstitution),
+                        Collectors.summingInt(Course::getParticipants)))
                 .entrySet().stream().sorted(Map.Entry.comparingByKey())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (c1, c2) -> c1, LinkedHashMap::new));
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue, (c1, c2) -> c1, LinkedHashMap::new));
         return result;
     }
 
     //2
     public Map<String, Integer> getPtcpCountByInstAndSubject() {
-        Map<String, Integer> result = this.courses.stream().collect(Collectors.groupingBy((Course::getA2),Collectors.summingInt(Course::getParticipants)));
+        Map<String, Integer> result = this.courses.stream().collect(Collectors.groupingBy((Course::getA2), Collectors.summingInt(Course::getParticipants)));
         LinkedHashMap<String, Integer> collect2 = result.entrySet().stream()
                 .sorted(((item1, item2) -> {
                     int compare = item2.getValue().compareTo(item1.getValue());
